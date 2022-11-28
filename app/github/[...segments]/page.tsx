@@ -1,4 +1,4 @@
-import { getGHContents } from "#/lib/github/contents";
+import { getBlogContent } from "#/lib/blog/content";
 
 interface Props {
   params: {
@@ -8,14 +8,15 @@ interface Props {
 
 const Page = async (props: Props) => {
   const { params } = props;
-  const content = await getGHContents({
-    owner: "monodyle",
-    repo: "algorithms-adventure",
-    path: "leetcode-problems/1046-last-stone-weight/README.md",
+  const data = await getBlogContent({
+    owner: "thien-do",
+    // repo: "algorithms-adventure",
+    // path: "leetcode-problems/1046-last-stone-weight/README.md",
   });
+
   return (
     <div style={{ whiteSpace: "pre" }}>
-      {JSON.stringify({ params, content }, null, 2)}
+      {JSON.stringify({ params, data }, null, 2)}
     </div>
   );
 };
