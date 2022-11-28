@@ -1,6 +1,5 @@
-import { OctokitResponse } from "@octokit/types";
 import "server-only";
-import { GhContentResponse } from "../github/content";
+import { getGithubContent, GitHubContent } from "../github/content";
 
 /** What to do if the folder has a README */
 export type BlogConfigReadme =
@@ -19,27 +18,38 @@ const fallback: BlogConfig = {
   readme: "show",
 };
 
-type Raw = PromiseSettledResult<OctokitResponse<GhContentResponse>>;
+interface Params {
+  owner: string;
+  repo: string;
+}
 
-export const parseBlogConfig = (raw: Raw): BlogConfig => {
-  if (raw.status === "rejected") {
-    // No config is expected
+export const getBlogConfig = async (params: Params): Promise<BlogConfig> => {
+  const { owner, repo } = params;
+  const path = "memos.pub.json";
+
+  let data: GitHubContent;
+  try {
+    const response = await getGithubContent({ owner, repo, path });
+    data = response.data;
+  } catch (error) {
+    // It's ok to have no config
     return fallback;
   }
 
-  const { data } = raw.value;
   if (Array.isArray(data)) {
     console.warn("config is folder");
     return fallback;
   }
+
   if (data.type !== "file") {
     console.warn("config is not file");
     return fallback;
   }
 
-  const text = Buffer.from(data.content, "base64").toString();
   try {
-    return JSON.parse(text) as BlogConfig;
+    const text = Buffer.from(data.content, "base64").toString();
+    const config = JSON.parse(text) as BlogConfig;
+    return config;
   } catch (e: unknown) {
     console.warn("config is invalid");
     return fallback;

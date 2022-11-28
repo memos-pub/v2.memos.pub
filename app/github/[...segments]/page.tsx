@@ -1,4 +1,4 @@
-import { getBlogContent } from "#/lib/blog/content";
+import { getBlogPage } from "#/lib/blog/page";
 
 interface Props {
   params: {
@@ -7,17 +7,13 @@ interface Props {
 }
 
 const Page = async (props: Props) => {
-  const { params } = props;
-  const data = await getBlogContent({
-    owner: "thien-do",
-    // repo: "algorithms-adventure",
-    // path: "leetcode-problems/1046-last-stone-weight/README.md",
-  });
+  const [owner, repo, ...pathSegments] = props.params.segments;
+  const path = pathSegments.join("/");
+
+  const page = await getBlogPage({ owner, repo, path });
 
   return (
-    <div style={{ whiteSpace: "pre" }}>
-      {JSON.stringify({ params, data }, null, 2)}
-    </div>
+    <div style={{ whiteSpace: "pre" }}>{JSON.stringify({ page }, null, 2)}</div>
   );
 };
 

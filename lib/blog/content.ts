@@ -1,27 +1,55 @@
 import "server-only";
-import { getGhContent } from "../github/content";
-import { parseBlogConfig } from "./config";
+import { getBlogClean } from "./clean";
+import { getBlogExact } from "./exact";
+import { BlogPageParams } from "./page";
+import { getBlogReadme } from "./readme";
 
-export interface BlogContentPath {
-  owner: string;
-  repo?: string;
-  path?: string;
+export interface BlogContentEntry {
+  type: "file" | "dir";
+  name: string;
 }
 
-export const getBlogContent = async (raw: BlogContentPath) => {
-  const { owner } = raw;
-  const repo = raw.repo ?? owner; // Profile repo
-  const path = raw.path ?? ""; // Root
+export interface BlogContentFile {
+  type: "file";
+  content: string;
+}
 
-  const promises = [
-    "memos.pub.json", // Config
-    path, // File or folder
-    `${path}/README.md`, // Folder README
-    `${path}.md`, // File with clean url
-  ].map((path) => getGhContent({ owner, repo, path }));
+export interface BlogContentDir {
+  type: "dir";
+  entries: BlogContentEntry[];
+  readme: BlogContentFile | null;
+}
 
-  const data = await Promise.allSettled(promises);
-  // const [config, self, readme, clean] = data;
-  const config = parseBlogConfig(data[0]);
-  return data;
+export interface BlogContentError {
+  type: "error";
+  message: string;
+}
+
+export type BlogContent = BlogContentDir | BlogContentFile | BlogContentError;
+
+const NOT_FOUND: BlogContentError = {
+  type: "error",
+  message: "Not found",
+};
+
+export const getBlogContent = async (
+  params: Required<BlogPageParams>
+): Promise<BlogContent> => {
+  const [exact, clean, readme] = await Promise.all([
+    getBlogExact(params),
+    getBlogClean(params),
+    getBlogReadme(params),
+  ]);
+
+  if (exact === null) {
+    // Maybe the path is a file with clean url
+    return clean ?? NOT_FOUND;
+  }
+
+  if (exact.type === "file") return exact;
+  if (exact.type === "error") return exact;
+
+  // Exact is dir now
+  const dir = { ...exact, readme };
+  return dir;
 };
