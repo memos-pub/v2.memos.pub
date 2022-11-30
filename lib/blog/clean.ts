@@ -1,5 +1,6 @@
 import "server-only";
 import { getGithubContent, GitHubContent } from "../github/content";
+import { compileToHTML } from "../md/compile";
 import { BlogContentFile } from "./content";
 import { BlogPageParams } from "./page";
 
@@ -36,7 +37,8 @@ export const getBlogClean = async (
   try {
     const content = Buffer.from(data.content, "base64").toString();
     const clean: BlogContentFile = { type: "file", content };
-    return clean;
+    const code = await compileToHTML({ content });
+    return { type: "file", content: code };
   } catch (e: unknown) {
     console.warn("clean is invalid");
     return null;
