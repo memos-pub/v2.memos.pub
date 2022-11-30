@@ -1,11 +1,12 @@
 import "server-only";
-import { getGithubContent, GitHubContent } from "../github/content";
-import { BlogFile, parseBlogFile } from "./file";
-import { BlogPageParams } from "./page";
+import { getGithubContent, GitHubContent } from "#/lib/github/content";
+import { BlogPageParams } from "../page";
+import { BlogPost } from "../post/type";
+import { parseBlogPost } from "../post/parse";
 
 export const getBlogReadme = async (
   params: Required<BlogPageParams>
-): Promise<BlogFile | null> => {
+): Promise<BlogPost | null> => {
   const { owner, repo } = params;
   // Avoid leading "/" if at root (path === "")
   const path = [params.path, "README.md"].filter((p) => p !== "").join("/");
@@ -29,8 +30,8 @@ export const getBlogReadme = async (
   }
 
   try {
-    const file = await parseBlogFile(data);
-    return file;
+    const post = await parseBlogPost(data);
+    return post;
   } catch (e: unknown) {
     console.warn("readme is invalid");
     return null;

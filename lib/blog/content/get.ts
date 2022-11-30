@@ -1,29 +1,12 @@
 import "server-only";
 import { getBlogClean } from "./clean";
 import { getBlogExact } from "./exact";
-import { BlogFile } from "./file";
-import { BlogPageParams } from "./page";
 import { getBlogReadme } from "./readme";
+import { BlogList } from "../list/type";
+import { BlogContent, BlogError } from "./type";
+import { BlogPageParams } from "../page/get";
 
-export interface BlogContentEntry {
-  type: "file" | "dir";
-  name: string;
-}
-
-export interface BlogContentDir {
-  type: "dir";
-  entries: BlogContentEntry[];
-  readme: BlogFile | null;
-}
-
-export interface BlogContentError {
-  type: "error";
-  message: string;
-}
-
-export type BlogContent = BlogContentDir | BlogFile | BlogContentError;
-
-const NOT_FOUND: BlogContentError = {
+const NOT_FOUND: BlogError = {
   type: "error",
   message: "Not found",
 };
@@ -42,10 +25,10 @@ export const getBlogContent = async (
     return clean ?? NOT_FOUND;
   }
 
-  if (exact.type === "file") return exact;
+  if (exact.type === "post") return exact;
   if (exact.type === "error") return exact;
 
-  // Exact is dir now
-  const dir = { ...exact, readme };
-  return dir;
+  // Exact is a list now
+  const list: BlogList = { ...exact, readme };
+  return list;
 };

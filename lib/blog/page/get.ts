@@ -1,17 +1,7 @@
 import "server-only";
-import { BlogConfig, getBlogConfig } from "./config";
-import { BlogContent, getBlogContent } from "./content";
-
-export interface BlogPageParams {
-  owner: string;
-  repo?: string;
-  path?: string;
-}
-
-export interface BlogPage {
-  config: BlogConfig;
-  content: BlogContent;
-}
+import { getBlogConfig } from "../config/get";
+import { getBlogContent } from "../content/get";
+import { BlogPage, BlogPageParams } from "./type";
 
 export const getBlogPage = async (
   params: BlogPageParams
