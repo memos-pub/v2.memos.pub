@@ -1,8 +1,11 @@
 import { NextMiddleware, NextResponse } from "next/server";
 
-// This is used with "find" and "endsWith" so ensure sub domains are always
-// listed first
-const ROOT_DOMAINS = ["dev.memos.pub", "memos.pub"];
+// Does not work if a root domain is a sub domain of another
+// (e.g. ["memos.pub", "dev.memos.pub"] won't work)
+const ROOT_DOMAINS = [
+  "memos.pub", // Production
+  "memos-pub.vercel.app", // Staging
+];
 
 export const subDomainMiddleware: NextMiddleware = (request) => {
   const url = request.nextUrl.clone();
