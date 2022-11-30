@@ -1,23 +1,15 @@
+import { getGithubContent, GitHubContent } from "#/lib/github/content";
 import "server-only";
-import { getGithubContent, GitHubContent } from "../github/content";
-
-export interface BlogConfig {
-  readme?: "show" | "hide" | "only" | string;
-  layout?: "tailwind" | "github" | string;
-  color?: "rosepine" | "github" | string;
-  font?: string;
-}
+import { BlogParams } from "../type";
+import { BlogConfig } from "./type";
 
 const fallback: BlogConfig = {
   readme: "show",
 };
 
-interface Params {
-  owner: string;
-  repo: string;
-}
-
-export const getBlogConfig = async (params: Params): Promise<BlogConfig> => {
+export const getBlogConfig = async (
+  params: BlogParams
+): Promise<BlogConfig> => {
   const { owner, repo } = params;
   const path = "memos.pub.json";
 

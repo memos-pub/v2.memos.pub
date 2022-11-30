@@ -1,11 +1,12 @@
+import { getGithubContent, GitHubContent } from "#/lib/github/content";
 import "server-only";
-import { getGithubContent, GitHubContent } from "../github/content";
-import { BlogFile, parseBlogFile } from "./file";
-import { BlogPageParams } from "./page";
+import { parseBlogPost } from "../post/parse";
+import { BlogPost } from "../post/type";
+import { BlogParams } from "../type";
 
 export const getBlogClean = async (
-  params: Required<BlogPageParams>
-): Promise<BlogFile | null> => {
+  params: BlogParams
+): Promise<BlogPost | null> => {
   const { owner, repo, path: _path } = params;
 
   // File already includes extension (not clean url)
@@ -34,8 +35,8 @@ export const getBlogClean = async (
   }
 
   try {
-    const file = await parseBlogFile(data);
-    return file;
+    const post = await parseBlogPost(data);
+    return post;
   } catch (e: unknown) {
     console.warn("clean is invalid");
     return null;
