@@ -1,11 +1,11 @@
 import "server-only";
 import { getGithubContent, GitHubContent } from "../github/content";
-import { BlogContentFile } from "./content";
+import { BlogFile, parseBlogFile } from "./file";
 import { BlogPageParams } from "./page";
 
 export const getBlogClean = async (
   params: Required<BlogPageParams>
-): Promise<BlogContentFile | null> => {
+): Promise<BlogFile | null> => {
   const { owner, repo, path: _path } = params;
 
   // File already includes extension (not clean url)
@@ -34,9 +34,8 @@ export const getBlogClean = async (
   }
 
   try {
-    const content = Buffer.from(data.content, "base64").toString();
-    const clean: BlogContentFile = { type: "file", content };
-    return clean;
+    const file = await parseBlogFile(data);
+    return file;
   } catch (e: unknown) {
     console.warn("clean is invalid");
     return null;

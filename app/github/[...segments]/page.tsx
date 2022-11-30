@@ -12,9 +12,16 @@ const Page = async (props: GithubPageProps) => {
 
   const page = await getBlogPage({ owner, repo, path });
 
-  return (
-    <div style={{ whiteSpace: "pre" }}>{JSON.stringify({ page }, null, 2)}</div>
-  );
+  switch (page.content.type) {
+    case "file":
+      return <div dangerouslySetInnerHTML={{ __html: page.content.content }} />;
+    default:
+      return (
+        <div style={{ whiteSpace: "pre" }}>
+          {JSON.stringify(page.content, null, 2)}
+        </div>
+      );
+  }
 };
 
 export default Page;

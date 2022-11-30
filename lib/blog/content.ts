@@ -1,6 +1,7 @@
 import "server-only";
 import { getBlogClean } from "./clean";
 import { getBlogExact } from "./exact";
+import { BlogFile } from "./file";
 import { BlogPageParams } from "./page";
 import { getBlogReadme } from "./readme";
 
@@ -9,15 +10,10 @@ export interface BlogContentEntry {
   name: string;
 }
 
-export interface BlogContentFile {
-  type: "file";
-  content: string;
-}
-
 export interface BlogContentDir {
   type: "dir";
   entries: BlogContentEntry[];
-  readme: BlogContentFile | null;
+  readme: BlogFile | null;
 }
 
 export interface BlogContentError {
@@ -25,7 +21,7 @@ export interface BlogContentError {
   message: string;
 }
 
-export type BlogContent = BlogContentDir | BlogContentFile | BlogContentError;
+export type BlogContent = BlogContentDir | BlogFile | BlogContentError;
 
 const NOT_FOUND: BlogContentError = {
   type: "error",

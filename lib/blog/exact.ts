@@ -1,13 +1,9 @@
 import "server-only";
 import { getGithubContent, GitHubContent } from "../github/content";
-import {
-  BlogContent,
-  BlogContentDir,
-  BlogContentEntry,
-  BlogContentFile,
-} from "./content";
+import { BlogContent, BlogContentDir, BlogContentEntry } from "./content";
 import { BlogPageParams } from "./page";
 import type { components } from "@octokit/openapi-types";
+import { parseBlogFile } from "./file";
 
 type EntryRaw = components["schemas"]["content-directory"][number];
 
@@ -49,8 +45,7 @@ export const getBlogExact = async (
   }
 
   try {
-    const content = Buffer.from(data.content, "base64").toString();
-    const file: BlogContentFile = { type: "file", content };
+    const file = parseBlogFile(data);
     return file;
   } catch (e: unknown) {
     console.warn("exact is invalid");
