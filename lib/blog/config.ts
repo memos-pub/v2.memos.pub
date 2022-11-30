@@ -1,17 +1,11 @@
 import "server-only";
 import { getGithubContent, GitHubContent } from "../github/content";
 
-/** What to do if the folder has a README */
-export type BlogConfigReadme =
-  /** Show the README before the file list. The README is NOT listed in the file list. */
-  | "show"
-  /** Don't show the README. The README is STILL listed in the file list. */
-  | "hide"
-  /** Show the README and hide the file list. */
-  | "only";
-
 export interface BlogConfig {
-  readme: BlogConfigReadme;
+  readme?: "show" | "hide" | "only" | string;
+  layout?: "tailwind" | "github" | string;
+  color?: "rosepine" | "github" | string;
+  font?: string;
 }
 
 const fallback: BlogConfig = {
