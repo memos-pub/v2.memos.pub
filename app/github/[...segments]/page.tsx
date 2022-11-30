@@ -1,5 +1,4 @@
 import { getBlogPage } from "#/lib/blog/page";
-import { runMdx } from "#/lib/md/run";
 
 export interface GithubPageProps {
   params: {
@@ -12,22 +11,17 @@ const Page = async (props: GithubPageProps) => {
   const path = pathSegments.join("/");
 
   const page = await getBlogPage({ owner, repo, path });
-  const { content } = page;
-  if (content.type === "file") {
-    return (
-      <div
-        className="prose"
-        dangerouslySetInnerHTML={{
-          __html: content.content,
-        }}
-      />
-    );
+
+  switch (page.content.type) {
+    case "file":
+      return <div dangerouslySetInnerHTML={{ __html: page.content.content }} />;
+    default:
+      return (
+        <div style={{ whiteSpace: "pre" }}>
+          {JSON.stringify(page.content, null, 2)}
+        </div>
+      );
   }
-  return (
-    <div style={{ whiteSpace: "pre" }}>
-      {JSON.stringify(page.content, null, 2)}
-    </div>
-  );
 };
 
 export default Page;
