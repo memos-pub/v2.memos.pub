@@ -1,10 +1,10 @@
 import "server-only";
+import { BlogList } from "../list/type";
+import { BlogParams } from "../type";
 import { getBlogClean } from "./clean";
 import { getBlogExact } from "./exact";
 import { getBlogReadme } from "./readme";
-import { BlogList } from "../list/type";
 import { BlogContent, BlogError } from "./type";
-import { BlogPageParams } from "../page/get";
 
 const NOT_FOUND: BlogError = {
   type: "error",
@@ -12,7 +12,7 @@ const NOT_FOUND: BlogError = {
 };
 
 export const getBlogContent = async (
-  params: Required<BlogPageParams>
+  params: BlogParams
 ): Promise<BlogContent> => {
   const [exact, clean, readme] = await Promise.all([
     getBlogExact(params),

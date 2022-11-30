@@ -1,15 +1,3 @@
-import { GithubPageProps } from "./page";
+import { BlogPageHead } from "#/lib/blog/page/head";
 
-const Head = (props: GithubPageProps): JSX.Element => {
-  const [owner] = props.params.segments;
-  return (
-    <>
-      <link
-        rel="icon"
-        href={`//f.viole.in/api/favicon?user=${owner}&size=48`}
-      />
-    </>
-  );
-};
-
-export default Head;
+export default BlogPageHead;

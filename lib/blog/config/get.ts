@@ -1,17 +1,15 @@
 import { getGithubContent, GitHubContent } from "#/lib/github/content";
 import "server-only";
+import { BlogParams } from "../type";
 import { BlogConfig } from "./type";
 
 const fallback: BlogConfig = {
   readme: "show",
 };
 
-interface Params {
-  owner: string;
-  repo: string;
-}
-
-export const getBlogConfig = async (params: Params): Promise<BlogConfig> => {
+export const getBlogConfig = async (
+  params: BlogParams
+): Promise<BlogConfig> => {
   const { owner, repo } = params;
   const path = "memos.pub.json";
 

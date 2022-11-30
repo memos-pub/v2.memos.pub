@@ -1,12 +1,12 @@
 import { getGithubContent, GitHubContent } from "#/lib/github/content";
 import "server-only";
 import { parseBlogList } from "../list/parse";
-import { BlogPageParams } from "../page";
 import { parseBlogPost } from "../post/parse";
-import { BlogContent } from "./content";
+import { BlogParams } from "../type";
+import { BlogContent } from "./type";
 
 export const getBlogExact = async (
-  params: Required<BlogPageParams>
+  params: BlogParams
 ): Promise<BlogContent | null> => {
   const { owner, repo, path } = params;
 

@@ -1,31 +1,25 @@
-import { getBlogPage } from "./get";
+import { getBlogConfig } from "../config/get";
+import { getBlogContent } from "../content/get";
+import { BlogPost } from "../post/post";
+import { parseBlogPageParams } from "./parse";
+import { BlogPageProps } from "./type";
 
-export interface GithubPageProps {
-  params: {
-    segments: string[];
-  };
-}
+export const BlogPage = async (props: BlogPageProps): Promise<JSX.Element> => {
+  const params = parseBlogPageParams(props);
 
-const Page = async (props: GithubPageProps) => {
-  const [owner, repo, ...pathSegments] = props.params.segments;
-  const path = pathSegments.join("/");
+  const [config, content] = await Promise.all([
+    getBlogConfig(params),
+    getBlogContent(params),
+  ]);
 
-  const page = await getBlogPage({ owner, repo, path });
-
-  switch (page.content.type) {
-    case "file":
-      return <div dangerouslySetInnerHTML={{ __html: page.content.content }} />;
+  switch (content.type) {
+    case "post":
+      return <BlogPost post={content} />;
     default:
       return (
         <div style={{ whiteSpace: "pre" }}>
-          {JSON.stringify(page.content, null, 2)}
+          {JSON.stringify(content, null, 2)}
         </div>
       );
   }
 };
-
-export default Page;
-
-export const generateStaticParams = () => [];
-
-export const revalidate = 60;

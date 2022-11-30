@@ -1,11 +1,11 @@
 import "server-only";
 import { getGithubContent, GitHubContent } from "#/lib/github/content";
-import { BlogPageParams } from "../page";
 import { BlogPost } from "../post/type";
 import { parseBlogPost } from "../post/parse";
+import { BlogParams } from "../type";
 
 export const getBlogReadme = async (
-  params: Required<BlogPageParams>
+  params: BlogParams
 ): Promise<BlogPost | null> => {
   const { owner, repo } = params;
   // Avoid leading "/" if at root (path === "")

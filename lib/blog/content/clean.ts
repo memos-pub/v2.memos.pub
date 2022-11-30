@@ -1,11 +1,11 @@
 import { getGithubContent, GitHubContent } from "#/lib/github/content";
 import "server-only";
-import { BlogPageParams } from "../page";
 import { parseBlogPost } from "../post/parse";
 import { BlogPost } from "../post/type";
+import { BlogParams } from "../type";
 
 export const getBlogClean = async (
-  params: Required<BlogPageParams>
+  params: BlogParams
 ): Promise<BlogPost | null> => {
   const { owner, repo, path: _path } = params;
 
