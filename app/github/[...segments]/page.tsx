@@ -1,12 +1,12 @@
 import { getBlogPage } from "#/lib/blog/page";
 
-interface Props {
+export interface PageProps {
   params: {
     segments: string[];
   };
 }
 
-const Page = async (props: Props) => {
+const Page = async (props: PageProps) => {
   const [owner, repo, ...pathSegments] = props.params.segments;
   const path = pathSegments.join("/");
 
