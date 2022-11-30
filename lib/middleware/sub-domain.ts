@@ -5,6 +5,7 @@ import { NextMiddleware, NextResponse } from "next/server";
 const ROOT_DOMAINS = [
   "memos.pub", // Production
   "memos-pub.vercel.app", // Staging
+  "gitblog.dev",
 ];
 
 export const subDomainMiddleware: NextMiddleware = (request) => {
