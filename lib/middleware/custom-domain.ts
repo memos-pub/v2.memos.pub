@@ -5,10 +5,9 @@ import { NextResponse } from "next/server";
 export const customDomainMiddleware: NextMiddleware = (request) => {
   const url = request.nextUrl.clone();
 
-  const target = DOMAINS.get(url.hostname);
-  if (target === undefined) return;
+  const prefix = DOMAINS.get(url.hostname);
+  if (prefix === undefined) return;
 
-  // `pathname` starts with `/`
-  url.pathname = `/github/${target}${url.pathname}`;
+  url.pathname = `/_blog/${prefix}/${url.pathname}`;
   return NextResponse.rewrite(url);
 };

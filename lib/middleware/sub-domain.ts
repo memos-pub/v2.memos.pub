@@ -20,7 +20,8 @@ export const subDomainMiddleware: NextMiddleware = (request) => {
   // thien-do.memos.pub
   // ^------^ owner
   const owner = url.hostname.replace(`.${root}`, "");
-  // "pathname" starts with "/"
-  url.pathname = `/github/${owner}${url.pathname}`;
+  // Fallback to profile repo
+  if (url.pathname === "/") url.pathname = `/${owner}`;
+  url.pathname = `/_blog/${owner}/${url.pathname}`;
   return NextResponse.rewrite(url);
 };
