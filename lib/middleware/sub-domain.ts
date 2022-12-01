@@ -7,7 +7,7 @@ const ROOT_DOMAINS = [
 ];
 
 export const subDomainMiddleware: NextMiddleware = (request) => {
-  const url = request.nextUrl.clone();
+  const url = Object.freeze(request.nextUrl);
 
   // At root
   if (ROOT_DOMAINS.includes(url.hostname)) return;
@@ -15,13 +15,24 @@ export const subDomainMiddleware: NextMiddleware = (request) => {
   const root = ROOT_DOMAINS.find((domain) => {
     return url.hostname.endsWith(`.${domain}`);
   });
-  if (root === undefined) return;
+  if (root === undefined) {
+    console.warn(`Unknown root: "${url.hostname}"`);
+    return;
+  }
 
   // thien-do.memos.pub
   // ^------^ owner
   const owner = url.hostname.replace(`.${root}`, "");
-  // Fallback to profile repo
-  if (url.pathname === "/") url.pathname = `/${owner}`;
-  url.pathname = `/_blog/${owner}/${url.pathname}`;
-  return NextResponse.rewrite(url);
+
+  // Repo is a must have
+  if (url.pathname === "/") {
+    const next = url.clone();
+    next.pathname = `/${owner}`;
+    // Redirect, not rewrite, to ensure the "repo" is always on the URL
+    return NextResponse.redirect(next);
+  }
+
+  const next = url.clone();
+  next.pathname = `/_blog/${owner}/${url.pathname}`.replaceAll("//", "/");
+  return NextResponse.rewrite(next);
 };

@@ -3,11 +3,12 @@ import type { NextMiddleware } from "next/server";
 import { NextResponse } from "next/server";
 
 export const customDomainMiddleware: NextMiddleware = (request) => {
-  const url = request.nextUrl.clone();
+  const url = Object.freeze(request.nextUrl);
 
   const prefix = DOMAINS.get(url.hostname);
   if (prefix === undefined) return;
 
-  url.pathname = `/_blog/${prefix}/${url.pathname}`;
-  return NextResponse.rewrite(url);
+  const next = url.clone();
+  next.pathname = `/_blog/${prefix}/${url.pathname}`.replaceAll("//", "/");
+  return NextResponse.rewrite(next);
 };
