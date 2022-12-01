@@ -11,9 +11,7 @@ const Layout = (props: Props): JSX.Element => {
   return (
     <html lang="en">
       <head />
-      <body>
-        <div className="prose">{children}</div>
-      </body>
+      <body>{children}</body>
     </html>
   );
 };

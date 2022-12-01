@@ -5,6 +5,9 @@ import { BlogConfig } from "./type";
 
 const fallback: BlogConfig = {
   readme: "show",
+  color: "tailwind",
+  layout: "tailwind",
+  font: "inter",
 };
 
 export const getBlogConfig = async (
@@ -34,7 +37,8 @@ export const getBlogConfig = async (
 
   try {
     const text = Buffer.from(data.content, "base64").toString();
-    const config = JSON.parse(text) as BlogConfig;
+    const stored = JSON.parse(text) as Partial<BlogConfig>;
+    const config: BlogConfig = { ...fallback, ...stored };
     return config;
   } catch (e: unknown) {
     console.warn("config is invalid");

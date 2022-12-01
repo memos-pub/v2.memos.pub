@@ -1,5 +1,3 @@
-const Home = (): JSX.Element => {
-  return <div>memos.pub v2</div>;
-};
+import { HomePage } from "#/lib/home/page";
 
-export default Home;
+export default HomePage;
