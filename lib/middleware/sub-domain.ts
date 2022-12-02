@@ -1,28 +1,29 @@
 import { NextMiddleware, NextResponse } from "next/server";
+import { getMiddlewareHost } from "./host";
 
 // Subdomain must come before parent domain
-const ROOT_DOMAINS = [
-  "dev.memos.pub", // Dev
+const ROOT_HOSTS = [
+  "dev.memos.pub", // Staging
   "memos.pub", // Production
+  "localhost:3000", // Local dev
 ];
 
 export const subDomainMiddleware: NextMiddleware = (request) => {
   const url = Object.freeze(request.nextUrl);
+  const host = getMiddlewareHost(request);
 
   // At root
-  if (ROOT_DOMAINS.includes(url.hostname)) return;
+  if (ROOT_HOSTS.includes(host)) return;
 
-  const root = ROOT_DOMAINS.find((domain) => {
-    return url.hostname.endsWith(`.${domain}`);
-  });
+  const root = ROOT_HOSTS.find((domain) => host.endsWith(`.${domain}`));
   if (root === undefined) {
-    console.warn(`Unknown root: "${url.hostname}"`);
+    console.warn(`Unknown root: "${host}"`);
     return;
   }
 
   // thien-do.memos.pub
   // ^------^ owner
-  const owner = url.hostname.replace(`.${root}`, "");
+  const owner = host.replace(`.${root}`, "");
 
   // Repo is a must have
   if (url.pathname === "/") {
