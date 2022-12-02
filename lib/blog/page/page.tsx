@@ -4,7 +4,7 @@ import { BlogList } from "../list/list";
 import { BlogPost } from "../post/post";
 import { parseBlogPageParams } from "./parse";
 import { BlogPageProps } from "./type";
-
+import "@wooorm/starry-night/style/dark.css";
 export const BlogPage = async (props: BlogPageProps): Promise<JSX.Element> => {
   const params = parseBlogPageParams(props);
 
