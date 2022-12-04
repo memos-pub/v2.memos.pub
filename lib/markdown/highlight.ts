@@ -1,14 +1,24 @@
-import { createStarryNight, common } from "@wooorm/starry-night";
+// Source: https://github.com/wooorm/starry-night#example-integrate-with-unified-remark-and-rehype
+
+import { createStarryNight, all, Grammar } from "@wooorm/starry-night";
 import { visit } from "unist-util-visit";
 import { toString } from "hast-util-to-string";
-import type { Plugin } from "unified";
+import { Plugin } from "unified";
+import type * as Hast from "hast";
 
-export const rehypeStarryNight: Plugin = () => {
-  const starryNightPromise = createStarryNight(common);
+interface Options {
+  grammars?: Grammar[];
+}
+
+export const rehypeStarryNight: Plugin<Options[], Hast.Root> = (options) => {
+  const grammars = options.grammars || all;
+  const starryNightPromise = createStarryNight(grammars);
   const prefix = "language-";
-  return async (tree) => {
+
+  const plugin = async (tree: Hast.Root) => {
     const starryNight = await starryNightPromise;
-    visit(tree, (node, index, parent) => {
+
+    visit(tree, "element", function (node, index, parent) {
       if (!parent || index === null || node.tagName !== "pre") {
         return;
       }
@@ -23,6 +33,7 @@ export const rehypeStarryNight: Plugin = () => {
       ) {
         return;
       }
+
       const classes = head.properties.className;
 
       if (!Array.isArray(classes)) return;
@@ -39,7 +50,7 @@ export const rehypeStarryNight: Plugin = () => {
       if (!scope) return;
 
       const fragment = starryNight.highlight(toString(head), scope);
-      const children = /** @type {Array<ElementContent>} */ fragment.children;
+      const children = fragment.children as Hast.ElementContent[];
 
       parent.children.splice(index, 1, {
         type: "element",
@@ -56,4 +67,6 @@ export const rehypeStarryNight: Plugin = () => {
       });
     });
   };
+
+  return plugin;
 };

@@ -1,11 +1,10 @@
 import rehypeStringify from "rehype-stringify";
-import fs from "node:fs/promises";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import { rehypeStarryNight } from "./highlight";
 import "server-only";
 import { unified } from "unified";
+import { rehypeStarryNight } from "./highlight";
 
 export const parseMarkdown = async (raw: string): Promise<string> => {
   const compiler = unified()
@@ -14,9 +13,7 @@ export const parseMarkdown = async (raw: string): Promise<string> => {
     .use(remarkRehype)
     .use(rehypeStarryNight)
     .use(rehypeStringify);
-  const result = await compiler.process(
-    await fs.readFile("./lib/markdown/test.md")
-  );
+  const result = await compiler.process(raw);
   const html = String(result);
 
   return html;
