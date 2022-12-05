@@ -7,8 +7,14 @@ import { unified } from "unified";
 import { markdownCode } from "./code";
 import { markdownHeading } from "./heading";
 import { markdownMeta } from "./meta";
-
-export const parseMarkdown = async (raw: string): Promise<string> => {
+interface Content {
+  html: string;
+  meta: {
+    description: string;
+    title: string;
+  };
+}
+export const parseMarkdown = async (raw: string): Promise<Content> => {
   const compiler = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -20,6 +26,11 @@ export const parseMarkdown = async (raw: string): Promise<string> => {
 
   const result = await compiler.process(raw);
   const html = String(result);
-
-  return html;
+  return {
+    html,
+    meta: {
+      description: result.data.meta?.description ?? "",
+      title: result.data.meta?.title ?? "",
+    },
+  };
 };

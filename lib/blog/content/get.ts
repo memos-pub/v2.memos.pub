@@ -5,15 +5,22 @@ import { getBlogClean } from "./clean";
 import { getBlogExact } from "./exact";
 import { getBlogReadme } from "./readme";
 import { BlogContent, BlogError } from "./type";
+import { cache } from "react";
 
-const NOT_FOUND: BlogError = {
+const NOT_FOUND: BlogError & BlogMeta = {
   type: "error",
   message: "Not found",
+  meta: {
+    title: "Something went wrong",
+    description: "Something went wrong",
+  },
 };
-
-export const getBlogContent = async (
+interface BlogMeta {
+  meta: { description?: string; title?: string };
+}
+const _getBlogContent = async (
   params: BlogParams
-): Promise<BlogContent> => {
+): Promise<BlogContent & BlogMeta> => {
   const [exact, clean, readme] = await Promise.all([
     getBlogExact(params),
     getBlogClean(params),
@@ -26,9 +33,24 @@ export const getBlogContent = async (
   }
 
   if (exact.type === "post") return exact;
-  if (exact.type === "error") return exact;
+  if (exact.type === "error")
+    return {
+      ...exact,
+      meta: {
+        title: "Something went wrong",
+        description: "Something went wrong",
+      },
+    };
 
   // Exact is a list now
-  const list: BlogList = { ...exact, readme };
+  const list: BlogList & BlogMeta = {
+    ...exact,
+    readme,
+    meta: {
+      title: "something",
+      description: "",
+    },
+  };
   return list;
 };
+export const getBlogContent = cache(_getBlogContent);
