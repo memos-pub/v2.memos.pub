@@ -7,7 +7,6 @@ type Raw = components["schemas"]["content-file"];
 export const parseBlogPost = async (raw: Raw): Promise<BlogPost> => {
   const markdown = Buffer.from(raw.content, "base64").toString();
   const { html, meta } = await parseMarkdown(markdown);
-  console.count("parse time!");
   const file: BlogPost = { type: "post", html, meta };
   return file;
 };

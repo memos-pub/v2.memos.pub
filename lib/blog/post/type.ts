@@ -1,8 +1,7 @@
+import { BlogMeta } from "../content/type";
+
 export interface BlogPost {
   type: "post";
   html: string;
-  meta: {
-    description: string;
-    title: string;
-  };
+  meta: BlogMeta;
 }

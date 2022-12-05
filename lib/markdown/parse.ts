@@ -7,13 +7,13 @@ import { unified } from "unified";
 import { markdownCode } from "./code";
 import { markdownHeading } from "./heading";
 import { markdownMeta } from "./meta";
+
 interface Content {
+  // Avoid importing "../blog"
+  meta: { title: string | null; description: string | null };
   html: string;
-  meta: {
-    description: string;
-    title: string;
-  };
 }
+
 export const parseMarkdown = async (raw: string): Promise<Content> => {
   const compiler = unified()
     .use(remarkParse)
@@ -25,12 +25,13 @@ export const parseMarkdown = async (raw: string): Promise<Content> => {
     .use(rehypeStringify);
 
   const result = await compiler.process(raw);
-  const html = String(result);
-  return {
-    html,
+  const meta = result.data.meta;
+  const content: Content = {
     meta: {
-      description: result.data.meta?.description ?? "",
-      title: result.data.meta?.title ?? "",
+      title: meta?.title ?? null,
+      description: meta?.description ?? null,
     },
+    html: String(result),
   };
+  return content;
 };
