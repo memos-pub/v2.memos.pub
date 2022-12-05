@@ -43,7 +43,7 @@ export const getBlogReadme = async (
     const post = await parseBlogPost(data);
     return post;
   } catch (e: unknown) {
-    console.warn("readme is invalid");
+    console.warn("readme is invalid", e);
     return null;
   }
 };
