@@ -6,6 +6,7 @@ import "server-only";
 import { unified } from "unified";
 import { rehypeStarryNight } from "./rehype-starry-night";
 import { markdownHeading } from "./heading";
+import { markdownMeta } from "./meta";
 
 export const parseMarkdown = async (raw: string): Promise<string> => {
   const compiler = unified()
@@ -13,6 +14,7 @@ export const parseMarkdown = async (raw: string): Promise<string> => {
     .use(remarkGfm)
     .use(remarkRehype)
     .use(rehypeStarryNight)
+    .use(markdownMeta)
     .use(markdownHeading)
     .use(rehypeStringify);
 
