@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+WIP v2 of [memos.pub](https://memos.pub).
+Will replace https://github.com/thien-do/memos.pub.
 
-## Getting Started
+### To start local dev
 
-First, run the development server:
-
-```bash
+```
+npm install
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### To work on home page
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Navigate to `http://localhost:3000`
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### To work on blogs via sub-domain
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Navigate to `http://<username>.localhost:3000/<repo>`
 
-## Learn More
+- `<repo>` is optional (will use `username` if omitted)
+- E.g. http://thien-do.localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
+### To work on blogs via custom domain
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Add a custom domain to `/etc/hosts`: (You don't need to own it)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```sh
+# /etc/hosts
+127.0.0.1 thien.do
+```
 
-## Deploy on Vercel
+2. Map the domain in `./DOMAIN.ts`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```ts
+// DOMAINS.ts
+[
+  ["thien.do", "thien-do/thien-do"],
+  // ...
+];
+```
