@@ -5,15 +5,18 @@ import { getBlogClean } from "./clean";
 import { getBlogExact } from "./exact";
 import { getBlogReadme } from "./readme";
 import { BlogContent, BlogError } from "./type";
+import { cache } from "react";
 
 const NOT_FOUND: BlogError = {
   type: "error",
   message: "Not found",
 };
 
-export const getBlogContent = async (
-  params: BlogParams
-): Promise<BlogContent> => {
+// React's cache compares a function params so we can't use objects as params
+// as there's no way to share them between "head" and "page" at the same level.
+const _getBlogContent = async (_params: string): Promise<BlogContent> => {
+  const params = JSON.parse(_params) as BlogParams;
+
   const [exact, clean, readme] = await Promise.all([
     getBlogExact(params),
     getBlogClean(params),
@@ -32,3 +35,5 @@ export const getBlogContent = async (
   const list: BlogList = { ...exact, readme };
   return list;
 };
+
+export const getBlogContent = cache(_getBlogContent);

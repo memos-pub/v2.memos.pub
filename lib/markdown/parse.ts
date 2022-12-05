@@ -8,7 +8,13 @@ import { markdownCode } from "./code";
 import { markdownHeading } from "./heading";
 import { markdownMeta } from "./meta";
 
-export const parseMarkdown = async (raw: string): Promise<string> => {
+interface Content {
+  // Avoid importing "../blog"
+  meta: { title: string | null; description: string | null };
+  html: string;
+}
+
+export const parseMarkdown = async (raw: string): Promise<Content> => {
   const compiler = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -19,7 +25,13 @@ export const parseMarkdown = async (raw: string): Promise<string> => {
     .use(rehypeStringify);
 
   const result = await compiler.process(raw);
-  const html = String(result);
-
-  return html;
+  const meta = result.data.meta;
+  const content: Content = {
+    meta: {
+      title: meta?.title ?? null,
+      description: meta?.description ?? null,
+    },
+    html: String(result),
+  };
+  return content;
 };

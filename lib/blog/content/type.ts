@@ -6,4 +6,9 @@ export interface BlogError {
   message: string;
 }
 
+export interface BlogMeta {
+  title: string | null;
+  description: string | null;
+}
+
 export type BlogContent = BlogPost | BlogList | BlogError;
