@@ -5,13 +5,16 @@ import { visit } from "unist-util-visit";
 import { toString } from "hast-util-to-string";
 import { Plugin } from "unified";
 import type * as Hast from "hast";
+import "server-only";
+import "@wooorm/starry-night/style/both.css";
 
 interface Options {
   grammars?: Grammar[];
 }
 
 export const rehypeStarryNight: Plugin<Options[], Hast.Root> = (options) => {
-  const grammars = options.grammars || all;
+  // Careful: "options" is always optional in a unified.js Plugin
+  const grammars = options?.grammars || all;
   const starryNightPromise = createStarryNight(grammars);
   const prefix = "language-";
 
