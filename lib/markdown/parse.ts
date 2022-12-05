@@ -4,7 +4,7 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import "server-only";
 import { unified } from "unified";
-import { rehypeStarryNight } from "./rehype-starry-night";
+import { markdownCode } from "./code";
 import { markdownHeading } from "./heading";
 import { markdownMeta } from "./meta";
 
@@ -13,7 +13,7 @@ export const parseMarkdown = async (raw: string): Promise<string> => {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype)
-    .use(rehypeStarryNight)
+    .use(markdownCode)
     .use(markdownMeta)
     .use(markdownHeading)
     .use(rehypeStringify);

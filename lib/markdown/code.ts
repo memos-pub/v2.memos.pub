@@ -12,7 +12,7 @@ interface Options {
   grammars?: Grammar[];
 }
 
-export const rehypeStarryNight: Plugin<Options[], Hast.Root> = (options) => {
+const rehypeStarryNight: Plugin<Options[], Hast.Root> = (options) => {
   // Careful: "options" is always optional in a unified.js Plugin
   const grammars = options?.grammars || all;
   const starryNightPromise = createStarryNight(grammars);
@@ -73,3 +73,5 @@ export const rehypeStarryNight: Plugin<Options[], Hast.Root> = (options) => {
 
   return plugin;
 };
+
+export { rehypeStarryNight as markdownCode };
