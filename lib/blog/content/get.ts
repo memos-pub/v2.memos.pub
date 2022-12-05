@@ -12,7 +12,11 @@ const NOT_FOUND: BlogError = {
   message: "Not found",
 };
 
-const _getBlogContent = async (params: BlogParams): Promise<BlogContent> => {
+// React's cache compares a function params so we can't use objects as params
+// as there's no way to share them between "head" and "page" at the same level.
+const _getBlogContent = async (_params: string): Promise<BlogContent> => {
+  const params = JSON.parse(_params) as BlogParams;
+
   const [exact, clean, readme] = await Promise.all([
     getBlogExact(params),
     getBlogClean(params),

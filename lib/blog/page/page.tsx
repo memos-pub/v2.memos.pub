@@ -10,7 +10,7 @@ export const BlogPage = async (props: BlogPageProps): Promise<JSX.Element> => {
 
   const [config, content] = await Promise.all([
     getBlogConfig(params),
-    getBlogContent(params),
+    getBlogContent(JSON.stringify(params)),
   ]);
 
   const body = (() => {

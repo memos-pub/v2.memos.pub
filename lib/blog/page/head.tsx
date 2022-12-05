@@ -25,7 +25,7 @@ const getIcon = (params: BlogParams): string => {
 
 export const BlogPageHead = async (props: BlogPageProps) => {
   const params = parseBlogPageParams(props);
-  const content = await getBlogContent(params);
+  const content = await getBlogContent(JSON.stringify(params));
   return (
     <>
       <title>{getTitle(content, params)}</title>
