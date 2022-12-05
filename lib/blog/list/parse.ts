@@ -22,7 +22,7 @@ export const parseBlogList = async (raw: Raw): Promise<BlogList> => {
     .map(toEntry)
     .filter((e): e is BlogListEntry => e !== null);
 
-  // Meta and readme is provided later
-  const list: BlogList = { type: "list", entries, readme: null, meta: {} };
+  // Readme is provided later
+  const list: BlogList = { type: "list", entries, readme: null };
   return list;
 };

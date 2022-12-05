@@ -33,7 +33,6 @@ const _getBlogContent = async (_params: string): Promise<BlogContent> => {
 
   // Exact is a list now
   const list: BlogList = { ...exact, readme };
-  if (readme) list.meta = readme.meta;
   return list;
 };
 

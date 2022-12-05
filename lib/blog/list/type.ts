@@ -1,4 +1,3 @@
-import { BlogMeta } from "../content/type";
 import { BlogPost } from "../post/type";
 
 export interface BlogListEntry {
@@ -10,5 +9,4 @@ export interface BlogList {
   type: "list";
   entries: BlogListEntry[];
   readme: BlogPost | null;
-  meta: BlogMeta;
 }

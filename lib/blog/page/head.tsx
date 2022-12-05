@@ -1,22 +1,28 @@
 import { getBlogContent } from "../content/get";
-import { BlogContent } from "../content/type";
+import { BlogContent, BlogMeta } from "../content/type";
 import { BlogParams } from "../type";
 import { parseBlogPageParams } from "./parse";
 import { BlogPageProps } from "./type";
 
-const getTitle = (content: BlogContent, params: BlogParams): string => {
-  const { path, repo } = params;
-  if (content.type === "error") return "Error";
-  if (content.meta.title) return content.meta.title;
-  const file = path.split("/").at(-1);
-  if (file) return file;
-  return repo;
-};
+const getMeta = (
+  content: BlogContent,
+  params: BlogParams
+): { title: string; description: string | null } => {
+  if (content.type === "error") {
+    return { title: "Error", description: content.message };
+  }
 
-const getDescription = (content: BlogContent): string => {
-  if (content.type === "error") return content.message;
-  if (content.meta.description) return content.meta.description;
-  return "";
+  const { path, repo } = params;
+  // "||" because it could be an empty string
+  const file = path.split("/").at(-1) || repo;
+
+  const meta: BlogMeta | null =
+    content.type === "post" ? content.meta : content.readme?.meta ?? null;
+
+  return {
+    title: meta?.title ?? file,
+    description: meta?.description ?? null,
+  };
 };
 
 const getIcon = (params: BlogParams): string => {
@@ -26,10 +32,11 @@ const getIcon = (params: BlogParams): string => {
 export const BlogPageHead = async (props: BlogPageProps) => {
   const params = parseBlogPageParams(props);
   const content = await getBlogContent(JSON.stringify(params));
+  const { title, description } = getMeta(content, params);
   return (
     <>
-      <title>{getTitle(content, params)}</title>
-      <meta name="description" content={getDescription(content)} />
+      <title>{title}</title>
+      {description ? <meta name="description" content={description} /> : null}
       <link rel="icon" href={getIcon(params)} />
     </>
   );
